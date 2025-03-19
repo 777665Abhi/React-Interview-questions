@@ -586,12 +586,217 @@ function Profile({ initialAge }) {
 - Use **`props`** for **passing data**.  
 - Use **`state`** for **managing dynamic data**.  
 
-9. **What is a functional component vs. class component?**
-10. **How does React handle events? Provide an example.**
-11. **What is the purpose of `key` in React lists?**
-12. **How do you conditionally render elements in React?**
+---
+**What is a functional component vs. class component?**
+
+--- 
+In React, components can be defined using either **functional components** or **class components**.  
+
+### **Functional Component**  
+A functional component is a JavaScript function that returns JSX (React elements). It is a simpler way to write components, especially with React Hooks.  
+
+#### Example:  
+```jsx
+import React from "react";
+
+const Greeting = ({ name }) => {
+  return <h1>Hello, {name}!</h1>;
+};
+
+export default Greeting;
+```
+✅ **Advantages:**  
+- Simpler syntax  
+- Easier to read and maintain  
+- Uses **React Hooks** (`useState`, `useEffect`, etc.)  
+- Better performance (no need for a `this` context)  
 
 ---
+
+### **Class Component**  
+A class component is a JavaScript class that extends `React.Component` and includes a `render()` method to return JSX.  
+
+#### Example:  
+```jsx
+import React, { Component } from "react";
+
+class Greeting extends Component {
+  render() {
+    return <h1>Hello, {this.props.name}!</h1>;
+  }
+}
+
+export default Greeting;
+```
+✅ **Advantages:**  
+- Can use lifecycle methods like `componentDidMount`, `componentDidUpdate`, etc.  
+- Used before Hooks were introduced (React 16.8)  
+
+---
+
+### **Key Differences**  
+| Feature            | Functional Component     | Class Component |
+|-------------------|------------------------|----------------|
+| **Syntax**       | Function-based          | Class-based (`extends React.Component`) |
+| **State**        | Uses `useState` Hook    | Uses `this.state` |
+| **Lifecycle**    | Uses `useEffect` Hook   | Uses lifecycle methods (`componentDidMount`) |
+| **Performance**  | Faster (no `this` binding) | Slower due to `this` overhead |
+| **Usage**        | Modern, recommended     | Older, rarely used in new code |
+
+**💡 Best Practice:** Use **functional components with Hooks** for modern React development. 🚀
+
+---
+
+**What is the purpose of `key` in React lists?**
+
+---
+### **Purpose of `key` in React Lists**  
+In React, the `key` prop is used to uniquely identify list items when rendering dynamic lists. It helps React efficiently update and re-render components by tracking changes in the list.
+
+---
+
+### **Why is `key` Important?**  
+1. **Optimized Rendering** – React uses `key` to determine which items have changed, been added, or removed.  
+2. **Avoids Unnecessary Re-renders** – Without keys, React may unnecessarily re-render entire lists, affecting performance.  
+3. **Maintains State Consistency** – Helps keep component states stable across renders.
+
+---
+
+### **Example Without `key` (Inefficient)**
+```jsx
+const items = ["Apple", "Banana", "Cherry"];
+
+const FruitList = () => (
+  <ul>
+    {items.map((item) => (
+      <li>{item}</li> // Missing key! React will show a warning.
+    ))}
+  </ul>
+);
+```
+🔴 **Issue:** React will log a warning:  
+> *"Each child in a list should have a unique 'key' prop."*
+
+---
+
+### **Example With `key` (Efficient)**
+```jsx
+const items = ["Apple", "Banana", "Cherry"];
+
+const FruitList = () => (
+  <ul>
+    {items.map((item, index) => (
+      <li key={index}>{item}</li> // Proper key usage
+    ))}
+  </ul>
+);
+```
+✅ **Now React can efficiently track items in the list.**
+
+---
+
+### **Best Practices for `key`**
+✔ **Use a Unique Identifier**  
+   - If items have an `id`, use it instead of the array index.  
+   ```jsx
+   {items.map((item) => (
+     <li key={item.id}>{item.name}</li>
+   ))}
+   ```
+✔ **Avoid Using Index as `key` (if the list can change)**  
+   - Using `index` can cause issues when items are added/removed dynamically.  
+   - It should only be used when items are static and never reorder.  
+
+---
+**How do you conditionally render elements in React?**
+
+---
+
+In React, you can **conditionally render** elements using different approaches based on complexity.  
+
+---
+
+## **1. `if` Statement (Inside Function)**
+Use an `if` statement when the condition is complex and requires multiple return statements.  
+
+```jsx
+function Greeting({ isLoggedIn }) {
+  if (isLoggedIn) {
+    return <h1>Welcome back!</h1>;
+  }
+  return <h1>Please log in.</h1>;
+}
+```
+
+---
+
+## **2. Ternary Operator (`? :`)**
+Great for inline conditional rendering.  
+
+```jsx
+const Greeting = ({ isLoggedIn }) => (
+  <h1>{isLoggedIn ? "Welcome back!" : "Please log in."}</h1>
+);
+```
+
+---
+
+## **3. Logical AND (`&&`)**
+Use when rendering something only if a condition is `true`.  
+
+```jsx
+const Notification = ({ hasNewMessage }) => (
+  <div>{hasNewMessage && <p>You have a new message!</p>}</div>
+);
+```
+✅ **If `hasNewMessage` is `true`,** it renders `<p>You have a new message!</p>`.  
+❌ **If `false`,** it renders nothing.  
+
+---
+
+## **4. `switch` Statement (Multiple Conditions)**
+Use when handling multiple cases.  
+
+```jsx
+const StatusMessage = ({ status }) => {
+  switch (status) {
+    case "loading":
+      return <p>Loading...</p>;
+    case "success":
+      return <p>Data loaded successfully!</p>;
+    case "error":
+      return <p>Error fetching data!</p>;
+    default:
+      return <p>Unknown status</p>;
+  }
+};
+```
+
+---
+
+## **5. Inline Immediately Invoked Function Expression (IIFE)**
+For complex inline logic inside JSX.  
+
+```jsx
+const Greeting = ({ isLoggedIn }) => (
+  <>
+    {(() => {
+      if (isLoggedIn) return <h1>Welcome back!</h1>;
+      return <h1>Please log in.</h1>;
+    })()}
+  </>
+);
+```
+
+---
+
+### **Best Practices**  
+✅ Use **ternary operators** for simple conditions.  
+✅ Use **logical `&&`** for optional elements.  
+✅ Use **`if` statements** for complex conditions.  
+✅ Use **`switch`** for multiple cases.  
+
+Would you like a practical example using state? 🚀
 
 ## **🟠 Intermediate Level (For Experienced Developers)**
 1. **Explain the lifecycle methods in class components.**
